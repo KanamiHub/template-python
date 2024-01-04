@@ -32,47 +32,38 @@ def dividir_archivo(ruta_archivo, tamano_parte_mb, ide):
                 numero_parte += 1
                 
     return lista_archivos_divididos
-def upload(path, host, username, password, repo):
-    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.72 Safari/537.36"}
-    with requests.Session() as upload:
-        getToken = upload.get(host+"/login",headers=headers)
-        token = BeautifulSoup(getToken.text,"html.parser").find('input',{'name':'csrfToken'})
-        login_data = {
-            "password": password,
-            "remember": 1,
-            "source": "",
-            "username": username,
-            "csrfToken":token
-        }
-        login_response = upload.post(f"{host}/login/signIn", params=login_data, headers=headers)
-
-        if "Salir" in login_response.text:
-            print("SESIÓN INICIADA")
-
-            # Obtener el token CSRF nuevamente para la carga del archivo
-            submission_page = upload.get(f"{host}/submission/wizard/2?submissionId={repo}#step-2", headers=headers)
-            token = submission_page.text.split('"csrfToken":"')[1].split('"')[0]
-
-            # Realizar la carga del archivo
-            files_data = {
-                "fileStage": "2",
-                "name[es_ES]": path,
-                "name[en_US]": path
-            }
-            files = {
-                "file": open(path, "rb")
-            }
-            headers["X-Csrf-Token"] = token
-            file_upload = upload.post(f"{host}/api/v1/submissions/{repo}/files", data=files_data, files=files, headers=headers)
-
-            # Obtener el ID del archivo subido
-            file_id = file_upload.text.split('_href":"')[1].split('"')[0].replace("\/", "/").split("/")[-1]
-
-            # Generar el enlace de descarga del archivo
-            link = f"{host}/$$$call$$$/api/file/file-api/download-file?submissionFileId={file_id}&submissionId={repo}&stageId=1"
-            return link
-        else:
-            print("ERROR AL INICIAR SESIÓN")
+def upload(filename,host, username, password, repository):
+    proxy = ""
+    spypng = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x02\x00\x00\x00\x90wS\xde\x00\x00\x00\x0cIDATx\x9cc```\x00\x00\x00\x04\x00\x01\xf6\x178U\x00\x00\x00\x00IEND\xaeB`\x82'
+    open(filename+".td", "wb").write(spypng+open(filename,"rb").read())
+    print(filename+".td")
+    filename = filename+".td"
+    inforhab = requests.session()
+    logindata = {"username":username,"password":password}
+    login = inforhab.post(host+"/login/signIn",data=logindata,allow_redirects=True,stream=True,proxies=dict(http=proxy,https=proxy))
+    if "Cerrar sesión" in login.text:
+    	print("Sesión Iniciada")
+    	try:
+    		data = {"articleId":repository,"from":"","title[es_ES]":random.randint(100000,999999),"creator[es_ES]":"TechDev","subject[es_ES]":"","type":"Herramienta de investigación","typeOther[es_ES]":"","description[es_ES]":"Subido por TechDev","publisher[es_ES]":"","sponsor[es_ES]":"TechDev","dateCreated":"","source[es_ES]":"","language":"es"}
+    	except:
+    		print("No se pudo crear los datos necesarios")
+    	try:
+    		filek = {"uploadSuppFile": open(filename,"rb")}
+    	except:
+    		print("No se pudo importar el archivo")
+    	upFile = inforhab.post(host+"/author/saveSuppFile?path=",data=data,files=filek,allow_redirects=True,stream=True,proxies=dict(http=proxy,https=proxy), headers={"MimeType":"Image/png"})
+    	getLink = inforhab.get(host+"/author/submission/"+repository,proxies=dict(http=proxy,https=proxy))
+    	soup = BeautifulSoup(getLink.text, "html.parser")
+    	entradas = soup.find_all('a',{'class':'file'})
+    	regex1 = str(entradas).split(",")
+    	regex2 = regex1[-1]
+    	regex3 = regex2.replace("]","")
+    	regex4 = regex3.split("-")[1]
+    	url = host+"/author/download/"+repository+"/"+regex4
+    	os.unlink(filename)
+    	return url
+    else:
+    	print("NO SE PUDO INICIAR SESIÓN")
 def download_file(url, ide):
 	           		timed = time.time()
 	           		global idownloads
@@ -122,11 +113,11 @@ def download_file(url, ide):
 	           		count = 1
 	           		total=len(zipes)
 	           		for fi in zipes:
-	           		    link = upload(fi,"https://rcta.unah.edu.cu/index.php/RGCDL","techdev","@A1a2a3mo","1780")
+	           		    link = upload(fi,"https://revsaludpublica.sld.cu/index.php/spu/","techdev2","@A1a2a3mo","26674")
 	           		    open("./ides/"+str(ide),"w").write(str(round(((count/total)*40)+60)))
 	           		    print(("SUBIDO "+fi+"\n"))
 	           		    count+=1
-	           		    hash += link.split("?submissionFileId=")[1].split("&")[0]+"/"
+	           		    hash += link.split("/")[-1]+"/"
 	           		open("./ides/"+str(ide),"w").write("100")
 	           		hash += "--"
 	           		hash = hash.replace("/--","--")
