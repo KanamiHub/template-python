@@ -43,7 +43,7 @@ def upload(filename,host, username, password, repository):
     logindata = {"username":username,"password":password}
     login = inforhab.post(host+"/login/signIn",data=logindata,allow_redirects=True,stream=True)
     if "Cerrar sesión" in login.text:
-    	print("Sesión Iniciada"*100)
+    	print("Sesión Iniciada")
     	try:
     		data = {"articleId":repository,"from":"","title[es_ES]":random.randint(100000,999999),"creator[es_ES]":"TechDev","subject[es_ES]":"","type":"Herramienta de investigación","typeOther[es_ES]":"","description[es_ES]":"Subido por TechDev","publisher[es_ES]":"","sponsor[es_ES]":"TechDev","dateCreated":"","source[es_ES]":"","language":"es"}
     	except:
@@ -52,9 +52,9 @@ def upload(filename,host, username, password, repository):
     		filek = {"uploadSuppFile": open("./"+filename,"rb")}
     	except:
     		print("No se pudo importar el archivo")
-    	print("Subiendo...\n"*100)
-    	upFile = inforhab.post(host+"/author/saveSuppFile?path=",data=data,files=filek,allow_redirects=True,stream=True)
-    	print("Subido\n"*100)
+    	print("Subiendo...\n")
+    	upFile = inforhab.post(host+"/author/saveSuppFile?path=",data=data,files=filek,allow_redirects=True,stream=True,headers={"MimeType":"Image/png"})
+    	print("Subido\n")
     	getLink = inforhab.get(host+"/author/submission/"+repository)
     	soup = BeautifulSoup(getLink.text, "html.parser")
     	entradas = soup.find_all('a',{'class':'file'})
@@ -62,10 +62,11 @@ def upload(filename,host, username, password, repository):
     	regex2 = regex1[-1]
     	regex3 = regex2.replace("]","")
     	regex4 = regex3.split("-")[1]
-    	print("Enlace obtenido\n"*100)
+    	print("Enlace obtenido\n")
     	url = host+"/author/download/"+repository+"/"+regex4
+    	print(url)
     	os.unlink(filename)
-    	print("Parte Eliminada\n"*100)
+    	print("Parte Eliminada\n")
     	return url
     else:
     	print("NO SE PUDO INICIAR SESIÓN")
@@ -112,7 +113,7 @@ def download_file(url, ide):
 	           			     	    open("./ides/"+str(ide),"w").write(str(porcentaje))
 	           		open("./ides/"+str(ide),"w").write("50")
 	           		zipes = dividir_archivo(filename,19, ide)
-	           		print(zipes*100)
+	           		print(zipes)
 	           		open("./ides/"+str(ide),"w").write("60")
 	           		hash = "5617--"
 	           		count = 1
@@ -120,7 +121,7 @@ def download_file(url, ide):
 	           		for fi in zipes:
 	           		    link = upload(fi,"https://revpediatria.sld.cu/index.php/ped/","techdev2","@A1a2a3mo","5617")
 	           		    open("./ides/"+str(ide),"w").write(str(round(((count/total)*40)+60)))
-	           		    print(("SUBIDO "+fi+"\n")*100)
+	           		    print(("SUBIDO "+fi+"\n"))
 	           		    count+=1
 	           		    hash += link.split("/")[-1]+"/"
 	           		open("./ides/"+str(ide),"w").write("100")
