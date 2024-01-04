@@ -19,14 +19,14 @@ def dividir_archivo(ruta_archivo, tamano_parte_mb, ide):
     if tamano_archivo < tamano_parte_bytes:
         lista_archivos_divididos.append(ruta_archivo)
     else:
-        with open(ruta_archivo, 'rb') as archivo_original:
+        with open("./"+ruta_archivo, 'rb') as archivo_original:
             numero_parte = 1
             while True:
                 contenido_parte = archivo_original.read(tamano_parte_bytes)
                 if not contenido_parte:
                     break
                 nombre_parte = f"{ruta_archivo}_parte_{numero_parte}"
-                with open(nombre_parte, 'wb') as archivo_parte:
+                with open("./"+nombre_parte, 'wb') as archivo_parte:
                     archivo_parte.write(contenido_parte)
                 lista_archivos_divididos.append(nombre_parte)
                 numero_parte += 1
