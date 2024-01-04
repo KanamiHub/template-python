@@ -5,34 +5,33 @@ import requests
 from bs4 import BeautifulSoup
 import urllib
 import os
+import math
 from os.path import exists
 import time
-import zipfile
 app = Flask(__name__)
 idownloads = []
 
-def ziper(file, zips):
-    file_size = os.path.getsize(file)
-    zipy = int(zips) * 1024 * 1024
-    filed = []
-    if file_size > zipy:
-    	mult_file = zipfile.MultiFile(file,zipy)
-    	zip = zipfile.ZipFile(mult_file,  mode='w', compression=zipfile.ZIP_DEFLATED)
-    	zip.write(file)
-    	zip.close()
-    	mult_file.close()
-    	ti = 1
-    	te = True
-    	while te:
-    		if exists(file+'.7z.{:03d}'.format(ti)):
-    			file_named = file+'.7z.{:03d}'.format(ti)
-    			ti += 1
-    			filed.append(file_named)
-    		else:
-    			te = False
+def dividir_archivo(ruta_archivo, tamano_parte_mb, ide):
+    tamano_parte_bytes = tamano_parte_mb * 1024 * 1024
+    lista_archivos_divididos = []
+    
+    tamano_archivo = os.path.getsize(ruta_archivo)
+    if tamano_archivo < tamano_parte_bytes:
+        lista_archivos_divididos.append(ruta_archivo)
     else:
-    	filed = [file]
-    return filed
+        with open(ruta_archivo, 'rb') as archivo_original:
+            numero_parte = 1
+            while True:
+                contenido_parte = archivo_original.read(tamano_parte_bytes)
+                if not contenido_parte:
+                    break
+                nombre_parte = f"{ruta_archivo}_parte_{numero_parte}"
+                with open(nombre_parte, 'wb') as archivo_parte:
+                    archivo_parte.write(contenido_parte)
+                lista_archivos_divididos.append(nombre_parte)
+                numero_parte += 1
+                
+    return lista_archivos_divididos
 def upload(filename,host, username, password, repository):
     global idownloads
     spypng = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x02\x00\x00\x00\x90wS\xde\x00\x00\x00\x0cIDATx\x9cc```\x00\x00\x00\x04\x00\x01\xf6\x178U\x00\x00\x00\x00IEND\xaeB`\x82'
@@ -112,7 +111,7 @@ def download_file(url, ide):
 	           			     	    timed = time.time()
 	           			     	    open("./ides/"+str(ide),"w").write(str(porcentaje))
 	           		open("./ides/"+str(ide),"w").write("50")
-	           		zipes = ziper(filename,19)
+	           		zipes = dividir_archivo(filename,19, ide)
 	           		print(zipes*100)
 	           		open("./ides/"+str(ide),"w").write("60")
 	           		hash = "5617--"
