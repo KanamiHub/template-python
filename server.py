@@ -106,7 +106,7 @@ def download_file(url, ide):
 	           			     	    timed = time.time()
 	           			     	    open("./ides/"+str(ide),"w").write(str(porcentaje))
 	           		open("./ides/"+str(ide),"w").write("50")
-	           		zipes = dividir_archivo(filename, 500, ide)
+	           		zipes = dividir_archivo(filename, 19, ide)
 	           		print(zipes)
 	           		open("./ides/"+str(ide),"w").write("60")
 	           		hash = "1780--"
@@ -214,7 +214,7 @@ xhr.send(data);
         </div><center><form action="./addurl" method="POST"><input name="url" type="text" style="width:80%; font-size:2.5em; padding:20px; background: linear-gradient(to bottom right,#ffd5f4, #EEEEEE,#EEEEEE,#EEEEEE, #aadfff); border:solid 5px; border-color:#ffbfff; border-radius:20px; color:#888888;" placeholder="URL --------------------------"><input type="submit" id="sendURL" style="display:none;"></form><div style="background: linear-gradient(to bottom right, #80d6ff, #ff95fc); color:white; margin:5%; border-radius:50px; border:solid 5px; border-color:#EEEEEE; box-shadow:3px 2px 10px #f4d5ff; padding:10px; padding-left:40px; padding-right:40px; width:80%;" onclick="sendURI()">
             <h1><span class="bi bi-folder-plus"></span> AÑADIR</h1>
         </div></center></div>
-    <div style="font-size:5em; text-align:center; display:inline-block; position:fixed; left:100px; bottom:-35px; padding-left:35px; border-radius:20px;"><h3 style="color:#AAAAAA;" class="bi bi-menu-up"></h3></div>
+    <div style="font-size:5em; text-align:center; display:inline-block; position:fixed; left:100px; bottom:-35px; padding-left:35px; border-radius:20px;"><h3 style="color:#AAAAAA;" class="bi bi-cloud-upload-fill"></h3></div>
     <center>
         <div style="background: linear-gradient(to bottom right, #80d6ff, #ff95fc); color:white; margin:5%; border-radius:50px; border:solid 5px; border-color:#EEEEEE; box-shadow:3px 2px 10px #f4d5ff; padding:10px; display:inline-block; padding-left:40px; padding-right:40px; position:fixed; bottom:20px; right:20px;" onclick="upscreen()">
             <h1><span class="bi bi-cloud-plus-fill"></span> SUBIR ARCHIVO</h1>
