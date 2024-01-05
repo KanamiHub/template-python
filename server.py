@@ -109,7 +109,7 @@ def download_file(url, ide):
 	           		zipes = dividir_archivo(filename, 19, ide)
 	           		print(zipes)
 	           		open("./ides/"+str(ide),"w").write("60")
-	           		hash = "1780--"
+	           		hash = "26674--"
 	           		count = 1
 	           		total=len(zipes)
 	           		for fi in zipes:
